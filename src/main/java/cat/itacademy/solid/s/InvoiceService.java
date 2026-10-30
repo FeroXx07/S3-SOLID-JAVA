@@ -16,11 +16,8 @@ public class InvoiceService {
         text.append("Customer: ").append(invoice.customerName()).append(lineSeparator);
         text.append(lineSeparator);
 
-        BigDecimal total = new BigDecimal("0.00");
         for (InvoiceLine line : invoice.lines()) {
-            BigDecimal lineTotal = line.unitPrice()
-                    .multiply(BigDecimal.valueOf(line.quantity()));
-            total = total.add(lineTotal);
+            BigDecimal lineTotal = line.calculateTotal();
 
             text.append(line.description())
                     .append(" - ").append(line.quantity())
@@ -29,7 +26,7 @@ public class InvoiceService {
                     .append(lineSeparator);
         }
 
-        text.append(lineSeparator).append("TOTAL: ").append(total);
+        text.append(lineSeparator).append("TOTAL: ").append(invoice.calculateTotal());
 
         try {
             Files.writeString(destination, text.toString());

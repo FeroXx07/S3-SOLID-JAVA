@@ -43,7 +43,7 @@ Però aquesta a més de desar, en aquest cas a un arxiu, també conte i fa altre
 ## Proposta de refactoració
 Perquè el mètode saveFile() sigui més llegible i compleixi el `Single Responsibility Principle`.
 Cal delegar les responsabilitats:
-- Una classe que tingui com a objectiu calcular el total del Invoice.
+- Una classe que tingui com a objectiu calcular els totals de l'Invoice Lines i el total final de Invoice.
   - Segons l'arquitectura de disseny que es vol, es pot, o no, incloure la regla de negoci del calculament a la mateixa entitat del domini.
 - Una classe que tingui com a objectiu passar el contingut de l'objecte a un format serializable.
 - Una classe que tingui com a objectiu desar el contingut a un arxiu.
