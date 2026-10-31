@@ -54,3 +54,14 @@ _"Justifica si tenir un únic mètode públic implica tenir una única responsab
 Tenir només un mètode públic no implica tenir una única responsabilitat, aquest cas és l'exemple perfecte,
 com s'ha analitzat fins ara, té diverses responsabilitats, però el mès crític és el següent: 
 __diversos motius per canviar si cal fer un canvi en el format, regles de negoci, etc.__
+
+## Anàlisis Post-refactoració
+
+- S'han afegit tots els punts de la proposta:
+  - `Invoice` i `InvoiceLine` gestionen el calculament del total.
+    - `UserTest` conte dos unit tests per aquesta feature.
+  - `InvoiceSerializer` gestiona la conversió de les dades a un string.
+    - `UserTest` conte dos unit tests per aquesta feature.
+  - `InvoiceService` amb el `saveToFile()` gestiona el desament del string a un arxiu en el sistema.
+    - No s'han afegit nous tests per aquesta feature perquè els que ja existeixen són prou robust i suficients.
+- La majoria de refactoring de classes s'ha fet sense utilitzar cap eina del IDE, excepte en els casos d'alguns mètodes, s'ha utilitzat "Extract Method" del IntelliJ IDEA.
