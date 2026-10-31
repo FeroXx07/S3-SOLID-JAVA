@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
     private Invoice invoice;
+    private InvoiceSerializer invoiceSerializer;
 
     @BeforeEach
     void setUp() {
@@ -29,6 +30,8 @@ class UserTest {
                         )
                 )
         );
+
+        invoiceSerializer = new InvoiceSerializer();
     }
 
     @Test
@@ -67,7 +70,7 @@ class UserTest {
                         lineSeparator +
                         "TOTAL: 125.00";
 
-        assertEquals(expected,InvoiceSerializer.serialize(invoice));
+        assertEquals(expected,invoiceSerializer.serialize(invoice));
     }
 
     @Test
@@ -83,6 +86,6 @@ class UserTest {
                         lineSeparator +
                         "TOTAL: 0.00";
 
-        assertEquals(expected,InvoiceSerializer.serialize(emptyInvoice));
+        assertEquals(expected,invoiceSerializer.serialize(emptyInvoice));
     }
 }

@@ -7,13 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class InvoiceService {
+    private final InvoiceSerializer serializer = new InvoiceSerializer();
 
     public void saveToFile(Invoice invoice, Path destination) {
-        String serializedContent = InvoiceSerializer.serialize(invoice);
+        String serializedContent = serializer.serialize(invoice);
         openWriteFile(invoice, destination, serializedContent);
     }
 
-    private static void openWriteFile(Invoice invoice, Path destination, String serializedContent) {
+    private void openWriteFile(Invoice invoice, Path destination, String serializedContent) {
         try {
             Files.writeString(destination, serializedContent);
         } catch (IOException exception) {
