@@ -9,13 +9,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
-    private InvoiceService invoiceService;
     private Invoice invoice;
 
     @BeforeEach
     void setUp() {
-        invoiceService = new InvoiceService();
-
         invoice = new Invoice(
                 "INV-2026-001",
                 "Ada Lovelace",
@@ -57,4 +54,35 @@ class UserTest {
         assertEquals(emptyInvoice.calculateTotal(), zeroTwoDecimals);
     }
 
+    @Test
+    void serializedInvoiceShouldHaveExpectedFormat(){
+        String lineSeparator = System.lineSeparator();
+        String expected =
+                "INVOICE" + lineSeparator +
+                        "Number: INV-2026-001" + lineSeparator +
+                        "Customer: Ada Lovelace" + lineSeparator +
+                        lineSeparator +
+                        "Mechanical keyboard - 2 x 50.00 = 100.00" + lineSeparator +
+                        "Wireless mouse - 1 x 25.00 = 25.00" + lineSeparator +
+                        lineSeparator +
+                        "TOTAL: 125.00";
+
+        assertEquals(expected,InvoiceSerializer.serialize(invoice));
+    }
+
+    @Test
+    void serializedZeroInvoiceShouldHaveExpectedFormat(){
+        Invoice emptyInvoice = new Invoice("INV-2026-001", "Ada Lovelace", List.of());
+
+        String lineSeparator = System.lineSeparator();
+        String expected =
+                "INVOICE" + lineSeparator +
+                        "Number: INV-2026-001" + lineSeparator +
+                        "Customer: Ada Lovelace" + lineSeparator +
+                        lineSeparator +
+                        lineSeparator +
+                        "TOTAL: 0.00";
+
+        assertEquals(expected,InvoiceSerializer.serialize(emptyInvoice));
+    }
 }

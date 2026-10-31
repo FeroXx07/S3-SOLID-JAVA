@@ -9,27 +9,13 @@ import java.nio.file.Path;
 public class InvoiceService {
 
     public void saveToFile(Invoice invoice, Path destination) {
-        String lineSeparator = System.lineSeparator();
-        StringBuilder text = new StringBuilder();
-        text.append("INVOICE").append(lineSeparator);
-        text.append("Number: ").append(invoice.number()).append(lineSeparator);
-        text.append("Customer: ").append(invoice.customerName()).append(lineSeparator);
-        text.append(lineSeparator);
+        String serializedContent = InvoiceSerializer.serialize(invoice);
+        openWriteFile(invoice, destination, serializedContent);
+    }
 
-        for (InvoiceLine line : invoice.lines()) {
-            BigDecimal lineTotal = line.calculateTotal();
-
-            text.append(line.description())
-                    .append(" - ").append(line.quantity())
-                    .append(" x ").append(line.unitPrice())
-                    .append(" = ").append(lineTotal)
-                    .append(lineSeparator);
-        }
-
-        text.append(lineSeparator).append("TOTAL: ").append(invoice.calculateTotal());
-
+    private static void openWriteFile(Invoice invoice, Path destination, String serializedContent) {
         try {
-            Files.writeString(destination, text.toString());
+            Files.writeString(destination, serializedContent);
         } catch (IOException exception) {
             throw new UncheckedIOException(
                     "Could not save invoice: " + invoice.number(),
@@ -37,5 +23,4 @@ public class InvoiceService {
             );
         }
     }
-
 }
