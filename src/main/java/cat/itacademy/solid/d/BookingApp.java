@@ -2,7 +2,9 @@ package cat.itacademy.solid.d;
 
 import cat.itacademy.solid.d.console_menu.BookingConsole;
 import cat.itacademy.solid.d.console_menu.ConsoleInput;
+import cat.itacademy.solid.d.repository.BookingRepository;
 import cat.itacademy.solid.d.repository.H2BookingRepository;
+import cat.itacademy.solid.d.repository.InMemoryBookingRepository;
 import cat.itacademy.solid.d.service.BookingService;
 
 public class BookingApp {
@@ -14,20 +16,18 @@ public class BookingApp {
         System.out.println("  1. H2 (base de dades en memòria)");
         System.out.println("  2. En memòria (Map)");
 
-        if (input.readIntInRange("Tria persistència (1-2): ", 1, 2) == 2) {
-            printPendingExercise();
-            System.out.println();
-            System.out.println("Es continua amb H2.");
-        }
+        BookingRepository repository = switch (input.readIntInRange("Tria persistència (1-2): ", 1, 2)){
+            case 1 -> new H2BookingRepository("jdbc:h2:mem:bookings");
+            case 2 -> new InMemoryBookingRepository();
+            default -> null;
+        };
 
-        try (H2BookingRepository repository = new H2BookingRepository("jdbc:h2:mem:bookings")) {
-            BookingService service = new BookingService(repository);
-
-            new BookingConsole(repository, service, input, System.out).run();
-        }
+        BookingService service = new BookingService(repository);
+        new BookingConsole(repository, service, input, System.out).run();
     }
 
     // EXERCICI (DIP): la persistència triada ha de ser la que utilitzi realment l'aplicació.
+    @Deprecated
     private static void printPendingExercise() {
         System.out.println();
         System.out.println("La persistència en memòria ja està implementada.");

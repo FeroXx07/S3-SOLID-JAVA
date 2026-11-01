@@ -63,7 +63,7 @@ public class BookingConsole {
         out.println("╔" + "═".repeat(MENU_WIDTH) + "╗");
         out.println("║" + center("RESERVES DE SALES") + "║");
         out.println("╠" + "═".repeat(MENU_WIDTH) + "╣");
-        printMenuLine("Persistència : H2 (base de dades en memòria)");
+        printMenuLine("Persistència : " + repository.getRepositoryName());
         printMenuLine("Hora actual  : LocalDateTime.now()");
         out.println("╠" + "═".repeat(MENU_WIDTH) + "╣");
         printMenuLine("[1] Llistar totes les reserves");

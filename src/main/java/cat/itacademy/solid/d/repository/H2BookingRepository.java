@@ -38,6 +38,12 @@ public class H2BookingRepository implements BookingRepository, AutoCloseable {
         }
     }
 
+    @Override
+    public String getRepositoryName() {
+        return "H2 (base de dades en memòria)";
+    }
+
+    @Override
     public Booking save(Booking booking) {
         return booking.getId() == null ? insert(booking) : update(booking);
     }
@@ -106,6 +112,7 @@ public class H2BookingRepository implements BookingRepository, AutoCloseable {
         return dateTime == null ? null : Timestamp.valueOf(dateTime);
     }
 
+    @Override
     public List<Booking> findAllOrderedByStart() {
         String sql = "SELECT * FROM bookings ORDER BY starts_at, id";
 
@@ -121,6 +128,7 @@ public class H2BookingRepository implements BookingRepository, AutoCloseable {
         }
     }
 
+    @Override
     public Optional<Booking> findById(Long bookingId) {
         String sql = "SELECT * FROM bookings WHERE id = ?";
 

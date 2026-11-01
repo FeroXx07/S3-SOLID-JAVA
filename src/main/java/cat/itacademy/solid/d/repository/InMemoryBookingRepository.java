@@ -13,6 +13,12 @@ public class InMemoryBookingRepository implements BookingRepository {
     private final Map<Long, Booking> bookings = new HashMap<>();
     private long nextId = 1;
 
+    @Override
+    public String getRepositoryName() {
+        return "Map (base de dades en memòria)";
+    }
+
+    @Override
     public Booking save(Booking booking) {
         Long id = booking.getId();
         if (id == null) {
@@ -26,11 +32,13 @@ public class InMemoryBookingRepository implements BookingRepository {
         return copy(saved, id);
     }
 
+    @Override
     public Optional<Booking> findById(Long bookingId) {
         return Optional.ofNullable(bookings.get(bookingId))
                 .map(booking -> copy(booking, booking.getId()));
     }
 
+    @Override
     public List<Booking> findAllOrderedByStart() {
         return bookings.values().stream()
                 .sorted(Comparator.comparing(Booking::getStartsAt)
