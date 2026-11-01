@@ -3,7 +3,7 @@ package cat.itacademy.solid.d.console_menu;
 import cat.itacademy.solid.d.exception.BookingAccessDeniedException;
 import cat.itacademy.solid.d.exception.CancellationPeriodExpiredException;
 import cat.itacademy.solid.d.model.Booking;
-import cat.itacademy.solid.d.repository.H2BookingRepository;
+import cat.itacademy.solid.d.repository.BookingRepository;
 import cat.itacademy.solid.d.service.BookingService;
 
 import java.io.PrintStream;
@@ -16,14 +16,13 @@ public class BookingConsole {
 
     private static final int MENU_WIDTH = 48;
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-    private final H2BookingRepository repository;
+    private final BookingRepository repository;
     private final BookingService service;
     private final ConsoleInput input;
     private final PrintStream out;
 
     public BookingConsole(
-            H2BookingRepository repository,
+            BookingRepository repository,
             BookingService service,
             ConsoleInput input,
             PrintStream out

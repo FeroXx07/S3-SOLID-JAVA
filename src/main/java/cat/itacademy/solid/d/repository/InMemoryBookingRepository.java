@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class InMemoryBookingRepository {
+public class InMemoryBookingRepository implements BookingRepository {
 
     private final Map<Long, Booking> bookings = new HashMap<>();
     private long nextId = 1;
