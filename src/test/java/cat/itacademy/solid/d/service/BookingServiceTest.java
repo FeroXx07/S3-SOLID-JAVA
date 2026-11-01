@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
@@ -20,14 +21,26 @@ class BookingServiceTest {
 
     private H2BookingRepository repository;
     private BookingService service;
+    private BookingService fixedTimeService;
     private Clock clock;
+    private Clock fixedClockUtc;
 
     @BeforeEach
     void setUp() {
         clock = Clock.systemUTC();
+
+        LocalDateTime fixedNowUtc = LocalDateTime.now(clock);
+
+        fixedClockUtc = Clock.fixed(
+                Instant.parse("2026-11-01T10:00:00Z"),
+                ZoneId.of("UTC")
+        );
+
         repository = new H2BookingRepository(
                 "jdbc:h2:mem:" + UUID.randomUUID());
+
         service = new ConcreteBookingService(repository, clock);
+        fixedTimeService = new ConcreteBookingService(repository, fixedClockUtc);
     }
 
     @AfterEach
@@ -80,16 +93,8 @@ class BookingServiceTest {
         // Volem provar el límit exacte, però el servei llegeix el seu propi LocalDateTime.now().
         // Quan s'executa, ja han passat uns mil·lisegons i som a "24 h menys una mica": la reserva
         // queda fora de termini i el test falla, encara que la regla diu que el límit és vàlid.
-        LocalDateTime fixedNowUtc = LocalDateTime.now(clock);
-
-        Clock fixedClockUtc = Clock.fixed(
-                fixedNowUtc.atZone(ZoneId.of("UTC")).toInstant(),
-                ZoneId.of("UTC")
-        );
 
         Long id = save(LocalDateTime.now(fixedClockUtc).plusHours(24));
-        
-        BookingService fixedTimeService = new ConcreteBookingService(repository, fixedClockUtc);
         assertDoesNotThrow(() -> fixedTimeService.cancelBooking("CUSTOMER-001", id));
     }
 

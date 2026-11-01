@@ -36,3 +36,18 @@ Es crida el now del local datetime en el flow del test i acumula mili-segons de 
 
 La solució passa per primer utilitzar ``UTC`` com zona de temps i després temps fixats per comprovar la regla de negoci.
 La classe ``Clock`` (java.time) és interoperable amb ``LocalDateTime``: 
+
+````java
+// NO UTITLIZAR PER ALS TESTS: nanosegons, arrodiniments, truncaments, etc...
+// NO ES DETERMINISTA
+fixedClockUtc = Clock.fixed(
+                fixedNowUtc.atZone(ZoneId.of("UTC")).toInstant(),
+                ZoneId.of("UTC")
+        );
+
+// SI UTILITZAR PER ALS TESTS:
+fixedClockUtc = Clock.fixed(
+        Instant.parse("2026-11-01T10:00:00Z"),
+        ZoneId.of("UTC")
+    );
+````
