@@ -7,10 +7,11 @@ import cat.itacademy.solid.d.model.BookingStatus;
 import cat.itacademy.solid.d.repository.H2BookingRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,14 +19,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookingServiceTest {
 
     private H2BookingRepository repository;
-    private ConcreteBookingService service;
+    private BookingService service;
+    private Clock clock;
 
     @BeforeEach
     void setUp() {
+        clock = Clock.systemUTC();
         repository = new H2BookingRepository(
-                "jdbc:h2:mem:" + UUID.randomUUID()
-        );
-        service = new ConcreteBookingService(repository);
+                "jdbc:h2:mem:" + UUID.randomUUID());
+        service = new ConcreteBookingService(repository, clock);
     }
 
     @AfterEach
@@ -72,15 +74,23 @@ class BookingServiceTest {
         );
     }
 
-    @Disabled("Fràgil: no podem controlar l'hora. Habilita'l per veure'l fallar i després fes-lo determinista.")
+//    @Disabled("Fràgil: no podem controlar l'hora. Habilita'l per veure'l fallar i després fes-lo determinista.")
     @Test
     void ownerShouldCancelExactly24HoursBeforeStart() {
         // Volem provar el límit exacte, però el servei llegeix el seu propi LocalDateTime.now().
         // Quan s'executa, ja han passat uns mil·lisegons i som a "24 h menys una mica": la reserva
         // queda fora de termini i el test falla, encara que la regla diu que el límit és vàlid.
-        Long id = save(LocalDateTime.now().plusHours(24));
+        LocalDateTime fixedNowUtc = LocalDateTime.now(clock);
 
-        assertDoesNotThrow(() -> service.cancelBooking("CUSTOMER-001", id));
+        Clock fixedClockUtc = Clock.fixed(
+                fixedNowUtc.atZone(ZoneId.of("UTC")).toInstant(),
+                ZoneId.of("UTC")
+        );
+
+        Long id = save(LocalDateTime.now(fixedClockUtc).plusHours(24));
+        
+        BookingService fixedTimeService = new ConcreteBookingService(repository, fixedClockUtc);
+        assertDoesNotThrow(() -> fixedTimeService.cancelBooking("CUSTOMER-001", id));
     }
 
     private Long save(LocalDateTime startsAt) {

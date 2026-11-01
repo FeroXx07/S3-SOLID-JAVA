@@ -8,10 +8,13 @@ import cat.itacademy.solid.d.repository.InMemoryBookingRepository;
 import cat.itacademy.solid.d.service.BookingService;
 import cat.itacademy.solid.d.service.ConcreteBookingService;
 
+import java.time.Clock;
+
 public class BookingApp {
 
     public static void main(String[] args) {
         ConsoleInput input = new ConsoleInput(System.in, System.out);
+        Clock clock = Clock.systemUTC();
 
         System.out.println("Persistències disponibles:");
         System.out.println("  1. H2 (base de dades en memòria)");
@@ -23,8 +26,8 @@ public class BookingApp {
             default -> null;
         };
 
-        BookingService service = new ConcreteBookingService(repository);
-        new BookingConsole(repository, service, input, System.out).run();
+        BookingService service = new ConcreteBookingService(repository, clock);
+        new BookingConsole(repository, service, input, System.out, clock).run();
     }
 
     // EXERCICI (DIP): la persistència triada ha de ser la que utilitzi realment l'aplicació.

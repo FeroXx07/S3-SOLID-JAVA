@@ -5,9 +5,9 @@ import cat.itacademy.solid.d.exception.CancellationPeriodExpiredException;
 import cat.itacademy.solid.d.model.Booking;
 import cat.itacademy.solid.d.repository.BookingRepository;
 import cat.itacademy.solid.d.service.BookingService;
-import cat.itacademy.solid.d.service.ConcreteBookingService;
 
 import java.io.PrintStream;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -15,23 +15,26 @@ import java.util.NoSuchElementException;
 
 public class BookingConsole {
 
-    private static final int MENU_WIDTH = 48;
+    private static final int MENU_WIDTH = 64;
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final BookingRepository repository;
     private final BookingService service;
     private final ConsoleInput input;
     private final PrintStream out;
+    private final Clock clock;
 
     public BookingConsole(
             BookingRepository repository,
             BookingService service,
             ConsoleInput input,
-            PrintStream out
+            PrintStream out,
+            Clock clock
     ) {
         this.repository = repository;
         this.service = service;
         this.input = input;
         this.out = out;
+        this.clock = clock;
     }
 
     public void run() {
@@ -65,7 +68,7 @@ public class BookingConsole {
         out.println("║" + center("RESERVES DE SALES") + "║");
         out.println("╠" + "═".repeat(MENU_WIDTH) + "╣");
         printMenuLine("Persistència : " + repository.getRepositoryName());
-        printMenuLine("Hora actual  : LocalDateTime.now()");
+        printMenuLine("Hora actual  : LocalDateTime.now(zone: " + clock.getZone() + ") " + LocalDateTime.now(clock).format(FORMAT));
         out.println("╠" + "═".repeat(MENU_WIDTH) + "╣");
         printMenuLine("[1] Llistar totes les reserves");
         printMenuLine("[2] Veure reserva per id");
@@ -149,7 +152,7 @@ public class BookingConsole {
         long hoursFromNow = input.readLong("Inicia d'aquí a quantes hores? ", 0);
         long durationHours = input.readLong("Durada en hores: ", 1);
 
-        LocalDateTime startsAt = LocalDateTime.now().plusHours(hoursFromNow);
+        LocalDateTime startsAt = LocalDateTime.now(clock).plusHours(hoursFromNow);
         Booking saved = repository.save(
                 new Booking(customerId, roomId, startsAt, startsAt.plusHours(durationHours))
         );

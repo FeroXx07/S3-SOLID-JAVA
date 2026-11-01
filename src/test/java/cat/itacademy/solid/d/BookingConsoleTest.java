@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.time.Clock;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -154,12 +155,14 @@ class BookingConsoleTest {
     private String run(H2BookingRepository repository, String input) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(bytes);
+        Clock clock = Clock.systemUTC();
 
         new BookingConsole(
                 repository,
-                new ConcreteBookingService(repository),
+                new ConcreteBookingService(repository, clock),
                 new ConsoleInput(new ByteArrayInputStream(input.getBytes()), out),
-                out
+                out,
+                clock
         ).run();
 
         return bytes.toString();
