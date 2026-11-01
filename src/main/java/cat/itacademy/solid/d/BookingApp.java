@@ -6,6 +6,7 @@ import cat.itacademy.solid.d.repository.BookingRepository;
 import cat.itacademy.solid.d.repository.H2BookingRepository;
 import cat.itacademy.solid.d.repository.InMemoryBookingRepository;
 import cat.itacademy.solid.d.service.BookingService;
+import cat.itacademy.solid.d.service.ConcreteBookingService;
 
 public class BookingApp {
 
@@ -22,7 +23,7 @@ public class BookingApp {
             default -> null;
         };
 
-        BookingService service = new BookingService(repository);
+        BookingService service = new ConcreteBookingService(repository);
         new BookingConsole(repository, service, input, System.out).run();
     }
 

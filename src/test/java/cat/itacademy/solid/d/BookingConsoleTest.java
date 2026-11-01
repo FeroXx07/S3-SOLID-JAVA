@@ -4,7 +4,7 @@ import cat.itacademy.solid.d.console_menu.BookingConsole;
 import cat.itacademy.solid.d.console_menu.ConsoleInput;
 import cat.itacademy.solid.d.model.BookingStatus;
 import cat.itacademy.solid.d.repository.H2BookingRepository;
-import cat.itacademy.solid.d.service.BookingService;
+import cat.itacademy.solid.d.service.ConcreteBookingService;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -157,7 +157,7 @@ class BookingConsoleTest {
 
         new BookingConsole(
                 repository,
-                new BookingService(repository),
+                new ConcreteBookingService(repository),
                 new ConsoleInput(new ByteArrayInputStream(input.getBytes()), out),
                 out
         ).run();

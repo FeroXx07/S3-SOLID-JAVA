@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookingServiceTest {
 
     private H2BookingRepository repository;
-    private BookingService service;
+    private ConcreteBookingService service;
 
     @BeforeEach
     void setUp() {
         repository = new H2BookingRepository(
                 "jdbc:h2:mem:" + UUID.randomUUID()
         );
-        service = new BookingService(repository);
+        service = new ConcreteBookingService(repository);
     }
 
     @AfterEach

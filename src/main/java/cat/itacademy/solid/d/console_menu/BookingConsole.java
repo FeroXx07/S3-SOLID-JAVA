@@ -5,6 +5,7 @@ import cat.itacademy.solid.d.exception.CancellationPeriodExpiredException;
 import cat.itacademy.solid.d.model.Booking;
 import cat.itacademy.solid.d.repository.BookingRepository;
 import cat.itacademy.solid.d.service.BookingService;
+import cat.itacademy.solid.d.service.ConcreteBookingService;
 
 import java.io.PrintStream;
 import java.time.LocalDateTime;
