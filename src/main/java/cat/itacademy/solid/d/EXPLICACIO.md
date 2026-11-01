@@ -25,3 +25,14 @@ Per poder aplicar correctament el principi d'inversió de dependències, es nece
   - Interfície ``BookingService`` que incorpora contractes publics per operacions amb regles de serveis.
   - Aplicació del DI per a que classes com ``BookingService`` i ```BookingConsole``` reben externament les dependencies.
   - Aplicació del DIP per crear contractes comúns i permetre interoperabilitat amb diferents repositoris i serveis.
+
+## Anàlisis Time BookingApp  
+
+Utilitza ``LocalDateTime`` (java.time). Proporciona informació sobre la dada i el temps, però sense especificar quin fus horari o zona de temps. 
+
+Si s'utilitza el mateix programa sobre el mateix temps, però cadascun en zones horàries diferents, no tindrà els mateixos resultats,
+és a dir, no és determinista i a més incorrecte.
+Es crida el now del local datetime en el flow del test i acumula mili-segons de diferència que imposibilita el determinisme en el test.
+
+La solució passa per primer utilitzar ``UTC`` com zona de temps i després temps fixats per comprovar la regla de negoci.
+La classe ``Clock`` (java.time) és interoperable amb ``LocalDateTime``: 
